@@ -1,0 +1,33 @@
+# --- Laravel Defaults ---
+/node_modules
+/vendor
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+
+# --- IDE & Editors ---
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+Homestead.json
+Homestead.yaml
+
+# --- OS & Logs ---
+*.log
+.DS_Store
+Thumbs.db
+/auth.json
+
+# --- Custom Ignore Assets ---
+# Ini akan mengabaikan seluruh isi folder public/assets
+/public/assets/
