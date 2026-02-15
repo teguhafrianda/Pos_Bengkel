@@ -1,68 +1,89 @@
-POS Bengkel - Sistem Manajemen Bengkel Motor
-Aplikasi Point of Sale (POS) khusus bengkel motor yang dibangun menggunakan Laravel dan Livewire. Sistem ini dirancang untuk memudahkan pemilik bengkel dalam mengelola data pelanggan, inventaris sparepart, hingga pemantauan performa bisnis secara real-time.
+# 🏍️ POS Bengkel – Sistem Manajemen Bengkel Motor Modern
 
-🚀 Fitur Utama
+**POS Bengkel** adalah aplikasi Point of Sale (POS) khusus untuk bengkel motor, dibangun menggunakan **Laravel & Livewire**, yang dirancang untuk mempermudah pengelolaan bengkel secara **real-time**. Dengan POS ini, pemilik bengkel bisa memantau performa bisnis, mengelola transaksi, hingga mengatur stok sparepart tanpa ribet.
 
-1. Dashboard Statistik (Real-time Analytics)
-   Ringkasan Performa: Pantau Laba Bersih, Total Pendapatan, dan Total Pengeluaran bulanan secara instan.
+---
 
-Statistik Harian: Menampilkan jumlah unit kendaraan yang diservis setiap hari.
+## 🚀 Fitur Utama
 
-Grafik Analisis Keuntungan: Visualisasi tren keuntungan dalam 6 bulan terakhir untuk membantu pengambilan keputusan bisnis.
+### 1️⃣ Dashboard Performa (Real-time Analytics)
 
-Monitoring Status: Daftar kendaraan yang sedang diproses untuk manajemen antrean yang lebih baik.
+- **Ringkasan Laba & Pendapatan**: Pantau **laba bersih**, **total pendapatan**, dan **pengeluaran bulanan** secara instan.
+- **Statistik Harian Kendaraan**: Tahu jumlah kendaraan yang diservis setiap hari.
+- **Grafik Tren Keuntungan**: Visualisasi keuntungan **6 bulan terakhir** untuk pengambilan keputusan cerdas.
+- **Monitoring Status Pengerjaan**: Lihat kendaraan yang sedang diproses agar antrean lebih tertata.
 
-2. Manajemen Data Master
-   Data Pelanggan & Kendaraan: Penyimpanan basis data pemilik kendaraan beserta detail unitnya.
+### 2️⃣ Manajemen Data Master
 
-Inventaris Sparepart: Pengelolaan stok suku cadang bengkel.
+- **Pelanggan & Kendaraan**: Simpan data pemilik kendaraan beserta detail unitnya.
+- **Inventaris Sparepart**: Kelola stok suku cadang secara mudah.
+- **Daftar Layanan / Jasa**: Atur harga layanan seperti **Tune Up**, **Ganti Oli**, dan lainnya.
 
-Layanan / Jasa: Pengaturan daftar jasa servis (misal: Tune Up, Ganti Oli) beserta harganya.
+### 3️⃣ Modul Transaksi & Layanan
 
-3. Modul Transaksi & Layanan
-   Input Jasa Service: Pencatatan teknisi yang bertugas, jenis servis, serta keluhan pelanggan (misal: "Pasang Turbo").
+- **Input Jasa Service**: Catat teknisi bertugas, jenis servis, dan keluhan pelanggan (misal: “Pasang Turbo”).
+- **Pemakaian Sparepart Otomatis**: Sistem menghitung biaya total berdasarkan sparepart yang digunakan.
+- **Status Pengerjaan Dinamis**: Lacak status unit, **Proses** atau **Selesai**, secara real-time.
+- **Pembayaran Fleksibel**: Mendukung **Lunas** atau **Belum Lunas (Kasbon)**.
 
-Penggunaan Sparepart: Integrasi otomatis antara pemakaian suku cadang dengan total biaya transaksi.
+### 4️⃣ SDM & Operasional
 
-Status Pengerjaan: Pelacakan status unit secara dinamis (Proses atau Selesai).
+- **Manajemen Teknisi**: Kelola data mekanik/bengkel dengan mudah.
+- **Laporan Komprehensif**: Akses cepat ke laporan keuangan & aktivitas operasional.
+- **Status Bengkel Real-time**: Sidebar menampilkan status **Buka/Tutup** bengkel.
 
-Sistem Pembayaran Flexible: Mendukung status pembayaran "Lunas" maupun "Belum Lunas (Kasbon)".
+---
 
-4. SDM & Operasional
-   Manajemen Teknisi: Pengelolaan data mekanik/teknisi bengkel.
+## 🛠️ Teknologi yang Digunakan
 
-Laporan Komprehensif: Akses cepat ke laporan keuangan dan aktivitas operasional bengkel.
+- **Framework**: Laravel
 
-Status Bengkel: Indikator status buka/tutup bengkel pada sidebar.
-
-🛠️ Teknologi yang Digunakan
-Framework: Laravel
-
-Frontend: Livewire, Tailwind CSS (atau Bootstrap sesuai UI)
-
-Database: MySQL
-
-Icons: FontAwesome / Boxicons
+---
 
 ## 📸 Tampilan Aplikasi
 
-### Dashboard Performa
+### **Dashboard Performa**
 
-Menampilkan statistik laba, pendapatan, pengeluaran, serta grafik analisis bulanan.
+Menampilkan statistik laba, pendapatan, pengeluaran, serta grafik tren bulanan.
 ![Dashboard Bengkel](screenshots/dashboard.jpeg)
 
-### Form Transaksi Service
+### **Form Transaksi Service**
 
-Pencatatan data kendaraan, teknisi, jasa service, hingga status pembayaran.
+Mencatat data kendaraan, teknisi, jenis layanan, penggunaan sparepart, dan status pembayaran.
 ![Transaksi Service](screenshots/transaksi.jpeg)
 
-Cara Instalasi (Opsional)
-Clone repository: git clone https://github.com/teguhafrianda/Pos_Bengkel.git
+---
 
-Install dependencies: composer install & npm install
+## ⚡ Cara Instalasi
 
-Copy .env.example ke .env dan sesuaikan database.
+1. **Clone repository**
 
-Run migration & seed: php artisan migrate --seed
+```bash
+git clone https://github.com/teguhafrianda/Pos_Bengkel.git
+```
 
-Jalankan server: php artisan serve
+2. **Install dependencies**
+
+```bash
+composer install
+npm install
+```
+
+3. **Setup Environment**
+
+```bash
+cp .env.example .env
+# Sesuaikan database
+```
+
+4. **Run Migration & Seed**
+
+```bash
+php artisan migrate --seed
+```
+
+5. **Jalankan Server**
+
+```bash
+php artisan serve
+```
