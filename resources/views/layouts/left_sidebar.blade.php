@@ -20,24 +20,21 @@
                         <span data-key="t-pelanggan">Pelanggan</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('kendaraans.index') }}">
-                        <i data-feather="truck"></i>
-                        <span data-key="t-kendaraan">Kendaraan</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('spareparts.index') }}">
-                        <i data-feather="package"></i>
-                        <span data-key="t-sparepart">Sparepart</span>
-                    </a>
-                </li>
+
                 <li>
                     <a href="{{ route('services.index') }}">
                         <i data-feather="settings"></i>
                         <span data-key="t-layanan">Layanan / Jasa</span>
                     </a>
                 </li>
+                <!-- <li>
+                    <a href="{{ route('kendaraans.index') }}">
+                        <i data-feather="truck"></i>
+                        <span data-key="t-kendaraan">Kendaraan</span>
+                    </a>
+                </li> -->
+               
+                
 
                 {{-- ================= TRANSAKSI ================= --}}
                 <li class="menu-title mt-2" data-key="t-transaction">Transaksi</li>
@@ -54,6 +51,13 @@
                     <a href="{{ route('teknisis.index') }}">
                         <i data-feather="tool"></i>
                         <span data-key="t-teknisi">Teknisi</span>
+                    </a>
+                </li>
+
+                 <li>
+                    <a href="{{ route('spareparts.index') }}">
+                        <i data-feather="package"></i>
+                        <span data-key="t-sparepart">Sparepart</span>
                     </a>
                 </li>
 

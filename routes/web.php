@@ -52,7 +52,8 @@ Route::middleware(['installed', 'auth'])->group(function () {
     Route::permanentRedirect('/dashboard', '/');
 
     // Master Data
-    Route::resource('pelanggan', CustomerController::class)->names('customers')->only(['index', 'store']);
+    Route::get('/check-plat', [App\Http\Controllers\KendaraanController::class, 'checkPlat'])->name('kendaraans.checkPlat');
+    Route::resource('pelanggan', CustomerController::class)->names('customers');
     Route::resource('kendaraan', KendaraanController::class)->names('kendaraans');
 
     // SDM
