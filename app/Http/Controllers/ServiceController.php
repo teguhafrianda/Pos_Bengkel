@@ -39,23 +39,22 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kendaraan_id'      => 'required|exists:kendaraans,id',
-            'teknisi_id'        => 'required|exists:teknisis,id',
-            'jenis_service'     => 'required|string',
-            'tanggal'           => 'required|date',
-            
-            // TAMBAHKAN VALIDASI INI
-            'status_servis'     => 'required|in:Proses,Selesai',
-            'status_pembayaran' => 'required|in:Lunas,Belum Lunas',
+    'kendaraan_id'      => 'required|exists:kendaraans,id',
+    'teknisi_id'        => 'required|exists:teknisis,id',
+    'jenis_service'     => 'required|string',
+    'tanggal'           => 'required|date',
+    'status_servis'     => 'required|in:Proses,Selesai',
+    'status_pembayaran' => 'required|in:Lunas,Belum Lunas,Cicilan',
+    'dp'                => 'nullable|numeric|min:0',
 
-            'service_desc'      => 'required|array|min:1',
-            'service_desc.*'    => 'required|string',
-            'service_price'     => 'required|array|min:1',
-            'service_price.*'   => 'required|numeric|min:0',
+    'service_desc'      => 'required|array|min:1',
+    'service_desc.*'    => 'required|string',
+    'service_price'     => 'required|array|min:1',
+    'service_price.*'   => 'required|numeric|min:0',
 
-            'sparepart_id.*'    => 'nullable|exists:spareparts,id',
-            'sparepart_qty.*'   => 'nullable|integer|min:1',
-        ]);
+    'sparepart_id.*'    => 'nullable|exists:spareparts,id',
+    'sparepart_qty.*'   => 'nullable|integer|min:1',
+]);
 
         DB::beginTransaction();
 
@@ -119,9 +118,12 @@ class ServiceController extends Controller
             }
 
             // Update total akhir
+            $grandTotal = $totalService + $totalSparepart;
+
             $service->update([
-                'total_sparepart' => $totalSparepart,
-                'grand_total'     => $totalService + $totalSparepart
+                'total_sparepart'  => $totalSparepart,
+                'grand_total'      => $grandTotal,
+                'nominal_cicilan'  => $request->dp ?? 0, // pastikan DP masuk
             ]);
 
             DB::commit();

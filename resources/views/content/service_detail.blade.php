@@ -40,13 +40,17 @@
             @endif
 
             {{-- ================= INVOICE ================= --}}
+            @php
+                $dp = $service->nominal_cicilan ?? 0;
+                $sisa_hutang = $service->grand_total - $dp;
+            @endphp
+
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
                     
                     {{-- Header --}}
                     <div class="row mb-4 header-container">
                         <div class="col-sm-6">
-                            {{-- Nama Bengkel Dinamis dari Tabel Users --}}
                             <h4 class="text-primary mb-1 fw-bold text-uppercase">
                                 {{ auth()->user()->shop_name ?? 'BENGKEL POS' }}
                             </h4>
@@ -150,6 +154,12 @@
                         <div class="col-md-5 text-md-end total-section">
                             <div>Subtotal Jasa: Rp {{ number_format($service->total_jasa,0,',','.') }}</div>
                             <div>Subtotal Sparepart: Rp {{ number_format($service->total_sparepart,0,',','.') }}</div>
+
+                            @if($service->status_pembayaran == 'Cicilan')
+                                <div>DP / Cicilan: Rp {{ number_format($dp,0,',','.') }}</div>
+                                <div>Sisa Hutang: Rp {{ number_format($sisa_hutang,0,',','.') }}</div>
+                            @endif
+
                             <div class="border-top pt-2 mt-2">
                                 <h5 class="fw-bold">TOTAL BAYAR</h5>
                                 <h2 class="fw-bold text-primary">
@@ -165,8 +175,6 @@
         </div>
     </div>
 </div>
-
-
 
 {{-- ================= PRINT OPTIMIZED THERMAL ================= --}}
 <style>

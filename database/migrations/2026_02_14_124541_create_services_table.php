@@ -15,19 +15,21 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kendaraan_id')
-                  ->constrained('kendaraans')
-                  ->cascadeOnDelete();
+                ->constrained('kendaraans')
+                ->cascadeOnDelete();
             $table->foreignId('teknisi_id')
-                  ->constrained('teknisis')
-                  ->cascadeOnDelete();
+                ->constrained('teknisis')
+                ->cascadeOnDelete();
             $table->date('tanggal');
             $table->string('jenis_service');
             $table->text('keluhan')->nullable();
-            
+
             // --- KOLOM BARU ---
             $table->enum('status_servis', ['Proses', 'Selesai'])->default('Proses');
-            $table->enum('status_pembayaran', ['Lunas', 'Belum Lunas'])->default('Belum Lunas');
-            // ------------------
+            $table->enum('status_pembayaran', ['Lunas', 'Belum Lunas', 'Cicilan'])->default('Cicilan');
+
+            // Nominal cicilan / DP
+            $table->decimal('nominal_cicilan', 15, 2)->nullable()->default(0);
 
             $table->decimal('total_jasa', 15, 2)->default(0);
             $table->decimal('total_sparepart', 15, 2)->default(0);

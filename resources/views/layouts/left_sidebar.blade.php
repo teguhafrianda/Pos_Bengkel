@@ -27,12 +27,7 @@
                         <span data-key="t-layanan">Layanan / Jasa</span>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="{{ route('kendaraans.index') }}">
-                        <i data-feather="truck"></i>
-                        <span data-key="t-kendaraan">Kendaraan</span>
-                    </a>
-                </li> -->
+               
                
                 
 

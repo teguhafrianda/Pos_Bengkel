@@ -10,9 +10,17 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kendaraan_id','teknisi_id','jenis_service','tanggal','keluhan','status_servis',
-        'status_pembayaran', 
-        'total_jasa','total_sparepart','grand_total'
+        'kendaraan_id',
+        'teknisi_id',
+        'tanggal',
+        'jenis_service',
+        'keluhan',
+        'status_servis',
+        'status_pembayaran',
+        'nominal_cicilan', // ← ini baru
+        'total_jasa',
+        'total_sparepart',
+        'grand_total',
     ];
 
     public function items()
