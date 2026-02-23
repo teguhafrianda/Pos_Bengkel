@@ -21,9 +21,18 @@
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                         <h4 class="mb-sm-0 font-size-18">Data Sparepart</h4>
-                        <button class="btn btn-primary btn-sm waves-effect waves-light" type="button" data-bs-toggle="collapse" data-bs-target="#formTambahSparepart">
-                            <i class="bx bx-plus font-size-16 align-middle me-2"></i> Tambah Baru
-                        </button>
+                        
+                        <div class="d-flex gap-2">
+                            {{-- Input Pencarian --}}
+                            <div class="position-relative">
+                                <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Cari sparepart..." style="padding-left: 30px;">
+                                <i class="bx bx-search-alt position-absolute" style="left: 10px; top: 50%; transform: translateY(-50%);"></i>
+                            </div>
+
+                            <button class="btn btn-primary btn-sm waves-effect waves-light" type="button" data-bs-toggle="collapse" data-bs-target="#formTambahSparepart">
+                                <i class="bx bx-plus font-size-16 align-middle me-2"></i> Tambah Baru
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,7 +40,7 @@
             {{-- Form Tambah Baru (Collapse) --}}
             <div class="row collapse mb-4" id="formTambahSparepart">
                 <div class="col-12">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm border-primary">
                         <div class="card-body">
                             <form action="{{ route('spareparts.store') }}" method="POST">
                                 @csrf
@@ -86,11 +95,11 @@
                                             <th style="width: 150px;">Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="sparepartTable">
                                         @forelse($spareparts as $s)
-                                        <tr>
+                                        <tr class="sparepart-row">
                                             <td>{{ $loop->iteration }}</td>
-                                            <td class="fw-medium">{{ $s->name }}</td>
+                                            <td class="fw-medium sparepart-name">{{ $s->name }}</td>
                                             <td class="text-muted">Rp {{ number_format($s->cost_price, 0, ',', '.') }}</td>
                                             <td class="fw-bold">Rp {{ number_format($s->selling_price, 0, ',', '.') }}</td>
                                             @php $profit = $s->selling_price - $s->cost_price; @endphp
@@ -106,7 +115,6 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    {{-- Tombol Tambah Stok (Pemicu Modal) --}}
                                                     <button type="button" class="btn btn-soft-primary btn-sm waves-effect waves-light" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#modalTambahStok" 
@@ -116,7 +124,6 @@
                                                         <i class="bx bx-plus-circle font-size-16"></i>
                                                     </button>
 
-                                                    {{-- Tombol Hapus --}}
                                                     <form action="{{ route('spareparts.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Hapus data?')">
                                                         @csrf @method('DELETE')
                                                         <button type="submit" class="btn btn-soft-danger btn-sm">
@@ -127,7 +134,7 @@
                                             </td>
                                         </tr>
                                         @empty
-                                        <tr><td colspan="7" class="text-center py-5">Data Kosong</td></tr>
+                                        <tr id="noDataRow"><td colspan="7" class="text-center py-5">Data Kosong</td></tr>
                                         @endforelse
                                     </tbody>
                                 </table>
@@ -188,20 +195,52 @@
 
 @push('scripts')
 <script>
-    // Script untuk memindahkan data dari baris tabel ke dalam Modal saat tombol diklik
-    const modalTambahStok = document.getElementById('modalTambahStok');
-    modalTambahStok.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        
-        // Ambil data dari atribut data-*
-        const id = button.getAttribute('data-id');
-        const name = button.getAttribute('data-name');
-        const stock = button.getAttribute('data-stock');
+    // Fitur Pencarian Real-time
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#sparepartTable .sparepart-row');
+        let hasVisibleRows = false;
 
-        // Masukkan ke input di dalam modal
-        modalTambahStok.querySelector('#sparepart_id').value = id;
-        modalTambahStok.querySelector('#sparepart_name').value = name;
-        modalTambahStok.querySelector('#current_stock').value = stock + ' pcs';
+        rows.forEach(row => {
+            let name = row.querySelector('.sparepart-name').textContent.toLowerCase();
+            if (name.includes(filter)) {
+                row.style.display = "";
+                hasVisibleRows = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Tampilkan pesan jika tidak ada data yang cocok
+        let noDataRow = document.getElementById('noDataRow');
+        if (!hasVisibleRows && !noDataRow) {
+            let tbody = document.getElementById('sparepartTable');
+            let newRow = tbody.insertRow();
+            newRow.id = "noDataRow";
+            newRow.innerHTML = `<td colspan="7" class="text-center py-4">Data tidak ditemukan</td>`;
+        } else if (hasVisibleRows && noDataRow) {
+            noDataRow.remove();
+        }
     });
+
+    // Script Modal Update Stok
+    const modalTambahStok = document.getElementById('modalTambahStok');
+    if(modalTambahStok) {
+        modalTambahStok.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const stock = button.getAttribute('data-stock');
+
+            modalTambahStok.querySelector('#sparepart_id').value = id;
+            modalTambahStok.querySelector('#sparepart_name').value = name;
+            modalTambahStok.querySelector('#current_stock').value = stock + ' pcs';
+            
+            // Auto focus ke input jumlah tambah
+            setTimeout(() => {
+                modalTambahStok.querySelector('input[name="add_stock"]').focus();
+            }, 500);
+        });
+    }
 </script>
 @endpush

@@ -48,26 +48,27 @@ class KendaraanController extends Controller
 
     // Update kendaraan
     public function update(Request $request, $id)
-    {
-        $kendaraan = Kendaraan::findOrFail($id);
+{
+    $kendaraan = Kendaraan::findOrFail($id);
 
-        $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'plat_nomor'  => 'required|string|max:15|unique:kendaraans,plat_nomor,' . $kendaraan->id,
-            'merk'        => 'required|string|max:50',
-            'tipe'        => 'nullable|string|max:50',
-        ]);
+    $request->validate([
+        // Ubah jadi nullable karena di form edit unit tidak ada input customer_id
+        'customer_id' => 'nullable|exists:customers,id', 
+        'plat_nomor'  => 'required|string|max:15|unique:kendaraans,plat_nomor,' . $kendaraan->id,
+        'merk'        => 'required|string|max:50',
+        'tipe'        => 'nullable|string|max:50',
+    ]);
 
-        $kendaraan->update([
-            'customer_id' => $request->customer_id,
-            'plat_nomor'  => strtoupper($request->plat_nomor),
-            'merk'        => $request->merk,
-            'tipe'        => $request->tipe,
-        ]);
+    $kendaraan->update([
+        // Jika customer_id tidak dikirim, gunakan yang lama
+        'customer_id' => $request->customer_id ?? $kendaraan->customer_id, 
+        'plat_nomor'  => strtoupper($request->plat_nomor),
+        'merk'        => $request->merk,
+        'tipe'        => $request->tipe,
+    ]);
 
-        return redirect()->back()->with('success', 'Kendaraan berhasil diperbarui.');
-    }
-
+    return redirect()->back()->with('success', 'Data kendaraan berhasil diperbarui!');
+}
     // Hapus kendaraan
     public function destroy($id)
     {

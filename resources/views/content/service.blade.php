@@ -3,6 +3,37 @@
 @section('title', 'Tambah Service Kendaraan')
 
 @section('content')
+<style>
+    /* FIX: Memastikan Header (Navbar) selalu bisa diklik dan di lapisan teratas */
+    #page-topbar, .navbar-header {
+        z-index: 2000 !important;
+    }
+
+    /* Memastikan dropdown profil/notifikasi muncul di atas segalanya */
+    .dropdown-menu {
+        z-index: 2100 !important;
+    }
+
+    /* Sticky Card: Disesuaikan agar tidak memakan context klik header */
+    .sticky-top {
+        z-index: 900 !important; /* Nilai rendah agar tidak mengganggu navigasi */
+        top: 100px; /* Jarak aman dari header */
+        position: -webkit-sticky;
+        position: sticky;
+    }
+
+    /* Overlay fix: Mencegah main-content mengambil alih layar atas */
+    .main-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Penyesuaian visual untuk dropdown kendaraan */
+    .dropdown-kendaraan-custom {
+        z-index: 1050 !important;
+    }
+</style>
+
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
@@ -36,8 +67,8 @@
                                                 <span>Pilih Kendaraan</span>
                                                 <i class="mdi mdi-chevron-down"></i>
                                             </button>
-                                            <div class="dropdown-menu p-3 shadow" style="width:100%; min-width:300px">
-                                                <input type="text" class="form-control mb-2" id="searchKendaraan" placeholder="Cari plat nomor atau merk...">
+                                            <div class="dropdown-menu p-3 shadow dropdown-kendaraan-custom" style="width:100%; min-width:300px">
+                                                <input type="text" class="form-control mb-2" id="searchKendaraan" placeholder="Cari plat nomor atau merk..." autocomplete="off">
                                                 <div id="kendaraanList" style="max-height:250px; overflow-y:auto">
                                                     @foreach($kendaraans as $kendaraan)
                                                         <a href="#" class="dropdown-item border-bottom py-2 kendaraan-item" 
@@ -129,12 +160,13 @@
                             </div>
                             <div class="card-body">
                                 <div id="sparepart-wrapper">
-                                    {{-- Baris sparepart akan muncul di sini --}}
+                                    {{-- Dinamis via JS --}}
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    {{-- RINGKASAN TRANSAKSI --}}
                     <div class="col-lg-4">
                         <div class="card sticky-top shadow-lg">
                             <div class="card-header bg-light">
@@ -200,7 +232,6 @@
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -213,9 +244,7 @@
             <select class="form-select sparepart-select" name="sparepart_id[]" onchange="updateSparepartPrice(this)">
                 <option value="">-- Pilih Sparepart --</option>
                 @foreach($spareparts as $sp)
-                    <option value="{{ $sp->id }}" 
-                            data-price="{{ $sp->selling_price }}" 
-                            data-stock="{{ $sp->stock }}">
+                    <option value="{{ $sp->id }}" data-price="{{ $sp->selling_price }}" data-stock="{{ $sp->stock }}">
                         {{ $sp->name }} (Stok: {{ $sp->stock }})
                     </option>
                 @endforeach
@@ -246,7 +275,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Pemilihan Kendaraan
         $(document).on('click', '.kendaraan-item', function(e) {
             e.preventDefault();
             const id = $(this).data('id');
@@ -256,7 +284,6 @@
             $('#btnPilihKendaraan').removeClass('btn-outline-secondary').addClass('btn-outline-primary');
         });
 
-        // Pencarian Kendaraan
         $('#searchKendaraan').on('keyup', function() {
             const value = $(this).val().toLowerCase();
             $('#kendaraanList .kendaraan-item').filter(function() {
@@ -264,28 +291,15 @@
             });
         });
 
-        // Inisialisasi hitungan saat halaman dimuat
         calculateTotal();
     });
 
     function addServiceRow() {
-        const rowHtml = `
-            <div class="row mb-3 service-row align-items-end">
-                <div class="col-md-7">
-                    <input type="text" name="service_desc[]" class="form-control" placeholder="Deskripsi jasa..." required>
-                </div>
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text">Rp</span>
-                        <input type="number" name="service_price[]" class="form-control service-price" value="0" required oninput="calculateTotal()">
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeRow(this)">
-                        <i class="mdi mdi-delete"></i>
-                    </button>
-                </div>
-            </div>`;
+        const rowHtml = `<div class="row mb-3 service-row align-items-end">
+            <div class="col-md-7"><input type="text" name="service_desc[]" class="form-control" placeholder="Deskripsi jasa..." required></div>
+            <div class="col-md-4"><div class="input-group"><span class="input-group-text">Rp</span><input type="number" name="service_price[]" class="form-control service-price" value="0" required oninput="calculateTotal()"></div></div>
+            <div class="col-md-1"><button type="button" class="btn btn-outline-danger w-100" onclick="removeRow(this)"><i class="mdi mdi-delete"></i></button></div>
+        </div>`;
         $('#service-wrapper').append(rowHtml);
     }
 
@@ -297,8 +311,7 @@
     }
 
     function addSparepartRow() {
-        const template = $('#sparepart-template').html();
-        $('#sparepart-wrapper').append(template);
+        $('#sparepart-wrapper').append($('#sparepart-template').html());
     }
 
     function removeSparepartRow(btn) {
@@ -307,10 +320,8 @@
     }
 
     function updateSparepartPrice(selectElement) {
-        const selectedOption = $(selectElement).find(':selected');
-        const price = selectedOption.data('price') || 0;
-        const row = $(selectElement).closest('.sparepart-row');
-        row.find('.sparepart-price').val(price);
+        const price = $(selectElement).find(':selected').data('price') || 0;
+        $(selectElement).closest('.sparepart-row').find('.sparepart-price').val(price);
         calculateTotal();
     }
 
@@ -318,12 +329,8 @@
         let totalService = 0;
         let totalSparepart = 0;
 
-        // Hitung Jasa
-        $('.service-price').each(function() {
-            totalService += Number($(this).val()) || 0;
-        });
+        $('.service-price').each(function() { totalService += Number($(this).val()) || 0; });
 
-        // Hitung Sparepart
         $('.sparepart-row').each(function() {
             const price = Number($(this).find('.sparepart-price').val()) || 0;
             const qty = Number($(this).find('.sparepart-qty').val()) || 0;
@@ -336,36 +343,20 @@
         const dp = Number($('#dp').val()) || 0;
         const sisa = Math.max(0, grandTotal - dp);
 
-        // Update UI
         $('#total_service').text(formatCurrency(totalService));
         $('#total_sparepart').text(formatCurrency(totalSparepart));
         $('#grand_total').text(formatCurrency(grandTotal));
         $('#sisa_tagihan').text(formatCurrency(sisa));
 
-        // LOGIKA STATUS PEMBAYARAN (Default: Cicilan)
-        let status = "Cicilan"; 
-
-        if (grandTotal > 0) {
-            if (dp >= grandTotal) {
-                status = "Lunas";
-            } else if (dp === 0) {
-                // Kamu bisa ganti ke "Belum Lunas" jika DP benar-benar kosong, 
-                // tapi sesuai requestmu, default kita biarkan "Cicilan"
-                status = "Cicilan"; 
-            } else {
-                status = "Cicilan";
-            }
-        }
+        let status = "Cicilan";
+        if (grandTotal > 0 && dp >= grandTotal) status = "Lunas";
+        else if (grandTotal > 0 && dp === 0) status = "Belum Lunas";
         
         $('#status_pembayaran').val(status);
     }
 
     function formatCurrency(val) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            maximumFractionDigits: 0
-        }).format(val);
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
     }
 </script>
 @endpush
